@@ -13,4 +13,4 @@ RUN chmod +x /server-setup/Install.sh /server-setup/ServerStart.sh
 EXPOSE 25565
 
 # Ensure necessary files exist in the volume, then start the server
-CMD ["/bin/sh", "-c", "mkdir -p /data && cp -rn /server-setup/* /data/ && chmod +x /data/*.sh /data/*.jar && chmod 777 /data/forge-1.12.2-14.23.5.2860.jar && cd /data && ./ServerStart.sh"]
+CMD ["/bin/sh", "-c", "mkdir -p /data && cp -ru /server-setup/* /data/ && chmod +x /data/*.sh /data/*.jar && chmod 777 /data/forge-1.12.2-14.23.5.2860.jar && cd /data && ./ServerStart.sh"]
