@@ -1,14 +1,17 @@
 #!/bin/sh
 
-# Install git jika belum ada
-apt-get update && apt-get install -y git
+echo "Checking required environment variables..."
+echo "GITHUB_USER: $GITHUB_USER"
+echo "GITHUB_REPO: $GITHUB_REPO"
+echo "GITHUB_TOKEN: ${GITHUB_TOKEN:0:4}****"
+echo "SOURCE_DIR: $SOURCE_DIR"
+echo "CLONE_DIR: $CLONE_DIR"
 
-# Get Variables from Railway Environment
-GITHUB_USER="$RAILWAY_GITHUB_USER"
-GITHUB_REPO="$RAILWAY_GITHUB_REPO"
-GITHUB_TOKEN="$RAILWAY_GITHUB_TOKEN"
-SOURCE_DIR="$RAILWAY_SOURCE_DIR"
-CLONE_DIR="/tmp/repo"
+# Cek apakah Git tersedia
+if ! command -v git >/dev/null 2>&1; then
+  echo "Git is not installed. Installing now..."
+  apt-get update && apt-get install -y git || { echo "Failed to install git"; exit 1; }
+fi
 
 # Pastikan SOURCE_DIR tidak kosong
 if [ -z "$SOURCE_DIR" ]; then
@@ -24,10 +27,22 @@ rm -rf "$CLONE_DIR"
 mkdir -p "$CLONE_DIR"
 
 # Clone repo dengan pengecekan error
-git clone https://$GITHUB_TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO.git "$CLONE_DIR" || { echo "Git clone failed"; exit 1; }
+if ! git clone https://$GITHUB_TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO.git "$CLONE_DIR"; then
+  echo "Git clone failed. Check if the token and repo name are correct."
+  exit 1
+fi
+
+# Pastikan direktori target benar
+if [ ! -d "$CLONE_DIR" ]; then
+  echo "Error: Clone directory $CLONE_DIR does not exist."
+  exit 1
+fi
 
 # Copy isi dari SOURCE_DIR ke repo
-cp -r "$SOURCE_DIR"/* "$CLONE_DIR/"
+if ! cp -r "$SOURCE_DIR"/* "$CLONE_DIR/"; then
+  echo "Error copying files"
+  exit 1
+fi
 
 # Commit & push
 cd "$CLONE_DIR" || { echo "Failed to enter directory $CLONE_DIR"; exit 1; }

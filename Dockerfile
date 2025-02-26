@@ -1,5 +1,8 @@
 FROM openjdk:8-jre-slim
 
+# Install Git dan dependencies
+RUN apt-get update && apt-get install -y git
+
 # Set working directory (Railway volume mount point)
 WORKDIR /data
 
