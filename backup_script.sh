@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Checking required environment variables..."
 echo "GITHUB_USER: $RAILWAY_GITHUB_USER"
 echo "GITHUB_REPO: $RAILWAY_GITHUB_REPO"
-echo "GITHUB_TOKEN: ${RAILWAY_GITHUB_TOKEN:0:4}****"
+echo "GITHUB_TOKEN: $(echo "$RAILWAY_GITHUB_TOKEN" | cut -c1-4)****"
 echo "SOURCE_DIR: $RAILWAY_SOURCE_DIR"
 CLONE_DIR="/tmp/repo"
 
