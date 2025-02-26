@@ -1,11 +1,11 @@
 #!/bin/sh
 
 echo "Checking required environment variables..."
-echo "GITHUB_USER: $GITHUB_USER"
-echo "GITHUB_REPO: $GITHUB_REPO"
-echo "GITHUB_TOKEN: ${GITHUB_TOKEN:0:4}****"
-echo "SOURCE_DIR: $SOURCE_DIR"
-echo "CLONE_DIR: $CLONE_DIR"
+echo "GITHUB_USER: $RAILWAY_GITHUB_USER"
+echo "GITHUB_REPO: $RAILWAY_GITHUB_REPO"
+echo "GITHUB_TOKEN: ${RAILWAY_GITHUB_TOKEN:0:4}****"
+echo "SOURCE_DIR: $RAILWAY_SOURCE_DIR"
+CLONE_DIR="/tmp/repo"
 
 # Cek apakah Git tersedia
 if ! command -v git >/dev/null 2>&1; then
@@ -14,20 +14,20 @@ if ! command -v git >/dev/null 2>&1; then
 fi
 
 # Pastikan SOURCE_DIR tidak kosong
-if [ -z "$SOURCE_DIR" ]; then
+if [ -z "$RAILWAY_SOURCE_DIR" ]; then
   echo "Error: SOURCE_DIR is not set."
   exit 1
 fi
 
 # Hapus riwayat Git lama
-rm -rf "$SOURCE_DIR/.git"
+rm -rf "$RAILWAY_SOURCE_DIR/.git"
 
 # Hapus folder clone lama & buat ulang
 rm -rf "$CLONE_DIR"
 mkdir -p "$CLONE_DIR"
 
 # Clone repo dengan pengecekan error
-if ! git clone https://$GITHUB_TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO.git "$CLONE_DIR"; then
+if ! git clone https://${RAILWAY_GITHUB_TOKEN}@github.com/${RAILWAY_GITHUB_USER}/${RAILWAY_GITHUB_REPO}.git "$CLONE_DIR"; then
   echo "❌ Git clone failed. Check if the token and repo name are correct."
   exit 1
 fi
@@ -39,7 +39,7 @@ if [ ! -d "$CLONE_DIR" ]; then
 fi
 
 # Copy isi dari SOURCE_DIR ke repo
-if ! cp -r "$SOURCE_DIR"/* "$CLONE_DIR/"; then
+if ! cp -r "$RAILWAY_SOURCE_DIR"/* "$CLONE_DIR/"; then
   echo "❌ Error copying files"
   exit 1
 fi
@@ -58,7 +58,7 @@ if git diff --quiet && git diff --staged --quiet; then
 fi
 
 git add .
-git commit -m "Automated upload of content from $SOURCE_DIR on $(date)"
+git commit -m "Automated upload of content from $RAILWAY_SOURCE_DIR on $(date)"
 
 # Push dengan pengecekan error
 if ! git push origin main; then
