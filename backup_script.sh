@@ -5,18 +5,18 @@ GITHUB_USER="$RAILWAY_GITHUB_USER"
 GITHUB_REPO="$RAILWAY_GITHUB_REPO"
 GITHUB_TOKEN="$RAILWAY_GITHUB_TOKEN"
 
-# Remove old git history from the world folder
-rm -rf /data/world/.git
+# Remove old git history from the Ivernum folder
+rm -rf /data/saves/Ivernum/.git
 
 # Clone repo (remove old clone first)
 rm -rf /tmp/repo
 git clone https://$GITHUB_TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO.git /tmp/repo
 
-# Copy the contents of the world folder (not the folder itself)
-cp -r /data/world/* /tmp/repo/
+# Copy the contents of the Ivernum folder (not the folder itself)
+cp -r /data/saves/Ivernum/* /tmp/repo/
 
 # Commit & push
 cd /tmp/repo || exit
 git add .
-git commit -m "Automated upload of world content $(date)"
+git commit -m "Automated upload of Ivernum content $(date)"
 git push origin main
