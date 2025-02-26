@@ -56,8 +56,8 @@ echo "https://${GITHUB_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
 chmod 600 ~/.git-credentials
 
 # Set identitas Git
-git config user.name "Railway Backup Bot"
-git config user.email "backup-bot@railway.app"
+git config --local user.name "Railway Backup Bot"
+git config --local user.email "backup-bot@railway.app"
 
 # Fungsi untuk menjalankan backup
 backup_data() {
@@ -102,5 +102,3 @@ backup_data() {
     done
 }
 
-# Jalankan backup di background
-backup_data &
