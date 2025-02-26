@@ -6,14 +6,14 @@ GITHUB_REPO="$RAILWAY_GITHUB_REPO"
 GITHUB_TOKEN="$RAILWAY_GITHUB_TOKEN"
 
 # Remove old git history from the Ivernum folder
-rm -rf /data/saves/Ivernum/.git
+rm -rf /data/Ivernum/.git
 
 # Clone repo (remove old clone first)
 rm -rf /tmp/repo
 git clone https://$GITHUB_TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO.git /tmp/repo
 
 # Copy the contents of the Ivernum folder (not the folder itself)
-cp -r /data/saves/Ivernum/* /tmp/repo/
+cp -r /data/Ivernum/* /tmp/repo/
 
 # Commit & push
 cd /tmp/repo || exit
