@@ -44,12 +44,12 @@ if ! cp -r "$RAILWAY_SOURCE_DIR"/* "$CLONE_DIR/"; then
   exit 1
 fi
 
-# Masuk ke folder repo
-cd "$CLONE_DIR" || { echo "❌ Failed to enter directory $CLONE_DIR"; exit 1; }
-
 # Set identitas Git hanya untuk repo ini
 git config user.email "backup-bot@railway.app"
 git config user.name "Railway Backup Bot"
+
+# Masuk ke folder repo
+cd "$CLONE_DIR" || { echo "❌ Failed to enter directory $CLONE_DIR"; exit 1; }
 
 # Cek apakah ada perubahan sebelum commit
 if git diff --quiet && git diff --staged --quiet; then
