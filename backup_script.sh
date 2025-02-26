@@ -28,19 +28,19 @@ mkdir -p "$CLONE_DIR"
 
 # Clone repo dengan pengecekan error
 if ! git clone https://$GITHUB_TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO.git "$CLONE_DIR"; then
-  echo "Git clone failed. Check if the token and repo name are correct."
+  echo "❌ Git clone failed. Check if the token and repo name are correct."
   exit 1
 fi
 
 # Pastikan direktori target benar
 if [ ! -d "$CLONE_DIR" ]; then
-  echo "Error: Clone directory $CLONE_DIR does not exist."
+  echo "❌ Error: Clone directory $CLONE_DIR does not exist."
   exit 1
 fi
 
 # Copy isi dari SOURCE_DIR ke repo
 if ! cp -r "$SOURCE_DIR"/* "$CLONE_DIR/"; then
-  echo "Error copying files"
+  echo "❌ Error copying files"
   exit 1
 fi
 
@@ -49,7 +49,21 @@ git config --global user.email "backup-bot@railway.app"
 git config --global user.name "Railway Backup Bot"
 
 # Commit & push
-cd "$CLONE_DIR" || { echo "Failed to enter directory $CLONE_DIR"; exit 1; }
+cd "$CLONE_DIR" || { echo "❌ Failed to enter directory $CLONE_DIR"; exit 1; }
+
+# Cek apakah ada perubahan sebelum commit
+if git diff --quiet && git diff --staged --quiet; then
+  echo "✅ No changes to commit. Backup skipped."
+  exit 0
+fi
+
 git add .
-git commit -m "Automated upload of content from $SOURCE_DIR $(date)"
-git push origin main
+git commit -m "Automated upload of content from $SOURCE_DIR on $(date)"
+
+# Push dengan pengecekan error
+if ! git push origin main; then
+  echo "❌ Git push failed. Check your token, branch, or repo permissions."
+  exit 1
+fi
+
+echo "✅ Backup successfully pushed to GitHub!"
