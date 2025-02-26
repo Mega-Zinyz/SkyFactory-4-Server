@@ -44,6 +44,10 @@ if ! cp -r "$SOURCE_DIR"/* "$CLONE_DIR/"; then
   exit 1
 fi
 
+# Set Git user identity untuk commit
+git config --global user.email "backup-bot@railway.app"
+git config --global user.name "Railway Backup Bot"
+
 # Commit & push
 cd "$CLONE_DIR" || { echo "Failed to enter directory $CLONE_DIR"; exit 1; }
 git add .
